@@ -2,3 +2,9 @@
 
 Convert help output of a program to asciidoc, suitable for html conversion or
 a2x transform to man pages.
+
+Example usage
+-------------
+
+ $ help2adoc -e help2adoc -n "help to asciidoc converter" > help2adoc.1.txt
+ $ a2x --format manpage help2adoc.1.txt
