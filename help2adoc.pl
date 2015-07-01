@@ -38,10 +38,12 @@ my $executable;
 my $helpSwitch = "--help";
 my $versionSwitch = "--version";
 my $verbose = 0;
+my $longName;
 
-GetOptions("executable=s" => \$executable,
+GetOptions("executable|e=s" => \$executable,
   "help-switch=s" => \$helpSwitch,
   "version-switch=s" => \$versionSwitch,
+  "name|n=s" => \$longName,
   "verbose|v" => \$verbose,
   "help|h" => \&help,
   "version|V" => \&version,
@@ -55,6 +57,7 @@ sub help {
   print "  -e, --executable\twhat executable to extract from\n";
   print "  --help-switch\t\twhat option to get help (default=--help)\n";
   print "  --version-switch\twhat option to get version (default=--version)\n";
+  print "  -n, --name\tthe descriptive name to use\n";
   print "  -v, --verbose\t\tprint more information\n";
   print "  -h, --help\t\tPrint help and exit\n";
   print "  -V, --version\t\tPrint version and exit\n";
@@ -95,6 +98,7 @@ while(<$helpStream>) {
 close $helpStream;
 
 die "Failed to extract name" unless $name;
+$longName = $name unless $longName;
 
 open(my $versionStream, "-|", "$executable $versionSwitch") or die;
 while(<$versionStream>) {
@@ -109,11 +113,9 @@ while(<$versionStream>) {
 close $versionStream;
 
 print "= " . uc($name) . "(1)\n";
-print ":doctype:\tmanpage\n";
-print ":man source:\t$name\n";
-print ":man manual:\t$name Manual\n\n";
+print ":doctype:\tmanpage\n\n";
 print "== NAME\n";
-print "$name - $name\n\n";
+print "$name - $longName\n\n";
 print "== SYNOPSIS\n";
 print "*$name* $synopsis\n\n";
 print "== OPTIONS\n";
