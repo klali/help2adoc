@@ -120,7 +120,8 @@ close $versionStream;
 
 print "= " . uc($name) . "(1)\n";
 print ":doctype:\tmanpage\n";
-print ":man source:\t$name\n\n";
+print ":man source:\t$name\n";
+print ":man version:\t$version\n\n";
 print "== NAME\n";
 print "$name - $longName\n\n";
 print "== SYNOPSIS\n";
