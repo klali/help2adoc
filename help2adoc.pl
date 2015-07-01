@@ -75,6 +75,7 @@ my $name;
 my $synopsis;
 my @help;
 my $version;
+my $bugs;
 
 warn "Going to run '$executable' with '$helpSwitch' and '$versionSwitch'.\n" if $verbose;
 open(my $helpStream, "-|", "$executable $helpSwitch") or die;
@@ -89,6 +90,8 @@ while(<$helpStream>) {
   } elsif(m/^-/) {
     $gotHelp++;
     push @help, $_;
+  } elsif(m/^[Rr]eport bugs/) {
+    $bugs = $_;
   } elsif($gotHelp) {
     if($_ eq "") {
       $_ = "+";
@@ -140,6 +143,11 @@ foreach my $option (@help) {
 
   print "*" . join(" ", @first) . "*::\n";
   print "$second\n\n";
+}
+
+if($bugs) {
+  print "== REPORTING BUGS\n";
+  print "$bugs\n\n";
 }
 
 if($include) {
