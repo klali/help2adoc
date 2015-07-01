@@ -80,7 +80,6 @@ warn "Going to run '$executable' with '$helpSwitch' and '$versionSwitch'.\n" if 
 open(my $helpStream, "-|", "$executable $helpSwitch") or die;
 
 my $gotHelp = 0;
-my $gotEmpty = 0;
 while(<$helpStream>) {
   s/^\s+|\s+$//g;
   if(m/^Usage: ([a-zA-Z0-9-_]+) (.*)?/) {
@@ -89,9 +88,11 @@ while(<$helpStream>) {
     $synopsis = $2 if $2;
   } elsif(m/^-/) {
     $gotHelp++;
-    $gotEmpty = 0;
     push @help, $_;
   } elsif($gotHelp) {
+    if($_ eq "") {
+      $_ = "+";
+    }
     my $part = pop(@help);
     $part .= "\n$_";
     push @help, $part;
