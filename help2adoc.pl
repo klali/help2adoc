@@ -83,7 +83,7 @@ open(my $helpStream, "-|", "$executable $helpSwitch") or die;
 my $gotHelp = 0;
 while(<$helpStream>) {
   s/^\s+|\s+$//g;
-  if(m/^Usage: ([a-zA-Z0-9-_]+) (.*)?/) {
+  if(m/^[uU]sage: ([a-zA-Z0-9-_]+) (.*)?/) {
     warn "'$_' matched as usage" if $verbose;
     $name = $1 if $1;
     $synopsis = $2 if $2;
