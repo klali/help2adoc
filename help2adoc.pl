@@ -72,8 +72,7 @@ my @help;
 my $version;
 
 warn "Going to run '$executable' with '$helpSwitch' and '$versionSwitch'.\n" if $verbose;
-open(my $helpStream, "-|", "$executable $helpSwitch");
-die "Failed to run $executable with $helpSwitch" unless $helpStream;
+open(my $helpStream, "-|", "$executable $helpSwitch") or die;
 
 my $gotHelp = 0;
 my $gotEmpty = 0;
@@ -82,7 +81,7 @@ while(<$helpStream>) {
   if(m/^Usage: ([a-zA-Z0-9-_]+) (.*)?/) {
     warn "'$_' matched as usage" if $verbose;
     $name = $1 if $1;
-    $synopsis = "$1 $2" if $1 and $2;
+    $synopsis = $2 if $2;
   } elsif(m/^-/) {
     $gotHelp++;
     $gotEmpty = 0;
@@ -95,8 +94,9 @@ while(<$helpStream>) {
 }
 close $helpStream;
 
-open(my $versionStream, "-|", "$executable $versionSwitch");
-die "Failed to run $executable with $versionSwitch" unless $versionStream;
+die "Failed to extract name" unless $name;
+
+open(my $versionStream, "-|", "$executable $versionSwitch") or die;
 while(<$versionStream>) {
   s/^\s+|\s+$//g;
   if(m/^$name.*\s([a-zA-Z0-9-_\.]+)$/) {
@@ -115,7 +115,7 @@ print ":man manual:\t$name Manual\n\n";
 print "== NAME\n";
 print "$name - $name\n\n";
 print "== SYNOPSIS\n";
-print "$synopsis\n\n";
+print "*$name* $synopsis\n\n";
 print "== OPTIONS\n";
 foreach my $option (@help) {
   my @first;
@@ -129,7 +129,7 @@ foreach my $option (@help) {
   }
   $second = $option;
   $second =~ s/-[a-zA-Z0-9-_=]+//g;
-  $second =~ s/^,\s*//g;
+  $second =~ s/^,?\s*//g;
 
   print "*" . join(" ", @first) . "*::\n";
   print "$second\n\n";
