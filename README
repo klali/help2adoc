@@ -1,0 +1,4 @@
+== help to asciidoc converter
+
+Convert help output of a program to asciidoc, suitable for html conversion or
+a2x transform to man pages.
