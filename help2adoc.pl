@@ -39,11 +39,13 @@ my $helpSwitch = "--help";
 my $versionSwitch = "--version";
 my $verbose = 0;
 my $longName;
+my $include;
 
 GetOptions("executable|e=s" => \$executable,
   "help-switch=s" => \$helpSwitch,
   "version-switch=s" => \$versionSwitch,
   "name|n=s" => \$longName,
+  "include|i=s" => \$include,
   "verbose|v" => \$verbose,
   "help|h" => \&help,
   "version|V" => \&version,
@@ -135,4 +137,12 @@ foreach my $option (@help) {
 
   print "*" . join(" ", @first) . "*::\n";
   print "$second\n\n";
+}
+
+if($include) {
+  open(my $includeStream, "<", $include) or die;
+  while(<$includeStream>) {
+    next if m/^\s*#/;
+    print $_;
+  }
 }
