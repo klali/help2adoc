@@ -76,6 +76,8 @@ my $synopsis;
 my @help;
 my $version;
 my $bugs;
+my $home;
+my @other;
 
 warn "Going to run '$executable' with '$helpSwitch' and '$versionSwitch'.\n" if $verbose;
 open(my $helpStream, "-|", "$executable $helpSwitch") or die;
@@ -87,11 +89,18 @@ while(<$helpStream>) {
     warn "'$_' matched as usage" if $verbose;
     $name = $1 if $1;
     $synopsis = $2 if $2;
-  } elsif(m/^-/) {
+    next;
+  }
+  next unless $name;
+  if(m/^-/) {
     $gotHelp++;
     push @help, $_;
   } elsif(m/^[Rr]eport bugs/) {
+    $gotHelp = 0;
     $bugs = $_;
+  } elsif(m/[Hh]ome\s?page/) {
+    $gotHelp = 0;
+    $home = $_;
   } elsif($gotHelp) {
     if($_ eq "") {
       $_ = "+";
@@ -99,6 +108,9 @@ while(<$helpStream>) {
     my $part = pop(@help);
     $part .= "\n$_";
     push @help, $part;
+  } else {
+    next if $_ eq "";
+    push @other, $_;
   }
 }
 close $helpStream;
@@ -147,15 +159,27 @@ foreach my $option (@help) {
   print "$second\n\n";
 }
 
-if($bugs) {
-  print "== REPORTING BUGS\n";
-  print "$bugs\n\n";
-}
-
 if($include) {
   open(my $includeStream, "<", $include) or die;
   while(<$includeStream>) {
     print $_;
   }
   close $includeStream;
+}
+
+if($bugs) {
+  print "== REPORTING BUGS\n";
+  print "$bugs\n\n";
+}
+
+if($home) {
+  print "== HOMEPAGE\n";
+  print "$home\n\n";
+}
+
+if($#other > 0) {
+  print "== OTHER\n";
+  foreach my $line (@other) {
+    print "$line\n";
+  }
 }
