@@ -154,7 +154,7 @@ if($bugs) {
 if($include) {
   open(my $includeStream, "<", $include) or die;
   while(<$includeStream>) {
-    next if m/^\s*#/;
     print $_;
   }
+  close $includeStream;
 }
