@@ -1,9 +1,11 @@
 all:
-	@echo "Nothing to see here. Run make install to copy the script in /usr/bin".
+	./help2adoc.pl -e ./help2adoc.pl -n "Help to asciidoc" > help2adoc.1.txt
+	a2x --format manpage help2adoc.1.txt
 
 install:
 	cp ./help2adoc.pl /usr/bin/help2adoc
 	chmod +x /usr/bin/help2adoc
+	cp help2adoc.1 /usr/share/man/man1/
 
 uninstall:
 	rm -f /usr/bin/help2adoc
