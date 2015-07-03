@@ -59,7 +59,7 @@ sub help {
   print "  -e, --executable\twhat executable to extract from\n";
   print "  --help-switch\t\twhat option to get help (default=--help)\n";
   print "  --version-switch\twhat option to get version (default=--version)\n";
-  print "  -n, --name\tthe descriptive name to use\n";
+  print "  -n, --name\t\tthe descriptive name to use\n";
   print "  -v, --verbose\t\tprint more information\n";
   print "  -h, --help\t\tPrint help and exit\n";
   print "  -V, --version\t\tPrint version and exit\n";
