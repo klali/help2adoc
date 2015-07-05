@@ -95,7 +95,7 @@ while(<$helpStream>) {
   if(m/^-/) {
     $gotHelp++;
     push @help, $_;
-  } elsif(m/^[Rr]eport bugs/) {
+  } elsif(m/^[Rr]eport.* bugs/) {
     $gotHelp = 0;
     $bugs = $_;
   } elsif(m/[Hh]ome\s?page/) {
