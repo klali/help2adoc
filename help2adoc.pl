@@ -84,7 +84,10 @@ open(my $helpStream, "-|", "$executable $helpSwitch") or die;
 
 my $gotHelp = 0;
 while(<$helpStream>) {
-  s/^\s+|\s+$//g;
+  s/\s+$//;
+  s/^(\s+)//;
+  my $len = length($1);
+  $len = 0 unless $len;
   if(m/^[uU]sage: ([a-zA-Z0-9-_]+) (.*)?/) {
     warn "'$_' matched as usage" if $verbose;
     $name = $1 if $1;
@@ -92,6 +95,7 @@ while(<$helpStream>) {
     next;
   }
   next unless $name;
+  $gotHelp = 0 if $len == 0 && $_ ne "";
   if(m/^-/) {
     $gotHelp++;
     push @help, $_;
@@ -109,7 +113,10 @@ while(<$helpStream>) {
     $part .= "\n$_";
     push @help, $part;
   } else {
-    next if $_ eq "";
+    if($_ eq "") {
+      next if $#other == 0;
+      $_ = " +";
+    }
     push @other, $_;
   }
 }
