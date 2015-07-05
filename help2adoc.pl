@@ -179,6 +179,7 @@ if($#other > 0) {
   foreach my $line (@other) {
     print "$line\n";
   }
+  print "\n";
 }
 
 if($home) {
