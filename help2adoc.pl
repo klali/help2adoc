@@ -159,7 +159,7 @@ foreach my $option (@help) {
   $second = $option;
   $second =~ s/,\s-[a-zA-Z0-9-_=\[\]]+//g;
   $second =~ s/^-[a-zA-Z0-9-_=\[\]]+//g;
-  $second =~ s/^\s*|[\+]$//g;
+  $second =~ s/^\s*|[\+]$//mg;
   chomp($second);
 
   print "*" . join(" ", @first) . "*::\n";
