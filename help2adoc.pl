@@ -174,9 +174,11 @@ if($include) {
   close $includeStream;
 }
 
-if($bugs) {
-  print "== REPORTING BUGS\n";
-  print "$bugs\n\n";
+if($#other > 0) {
+  print "== OTHER\n";
+  foreach my $line (@other) {
+    print "$line\n";
+  }
 }
 
 if($home) {
@@ -184,9 +186,7 @@ if($home) {
   print "$home\n\n";
 }
 
-if($#other > 0) {
-  print "== OTHER\n";
-  foreach my $line (@other) {
-    print "$line\n";
-  }
+if($bugs) {
+  print "== REPORTING BUGS\n";
+  print "$bugs\n\n";
 }
