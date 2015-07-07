@@ -117,8 +117,8 @@ while(<$helpStream>) {
     push @help, $part;
   } else {
     if($_ eq "") {
-      next if $#other == 0;
-      $_ = " +";
+      next if $#other <= 0;
+      $_ = " +\n";
     }
     push @other, $_;
   }
