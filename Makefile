@@ -1,5 +1,6 @@
 all:
 	./help2adoc.pl -e ./help2adoc.pl -n "Help to asciidoc" -i help2adoc.adoc > help2adoc.1.txt
+	asciidoc help2adoc.1.txt
 	a2x --format manpage help2adoc.1.txt
 
 install:
