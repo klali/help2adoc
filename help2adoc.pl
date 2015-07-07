@@ -37,6 +37,7 @@ our $VERSION = "0.0.1";
 my $executable;
 my $helpSwitch = "--help";
 my $versionSwitch = "--version";
+my $versionString;
 my $verbose = 0;
 my $longName;
 my $include;
@@ -44,6 +45,7 @@ my $include;
 GetOptions("executable|e=s" => \$executable,
   "help-switch=s" => \$helpSwitch,
   "version-switch=s" => \$versionSwitch,
+  "version-string=s" => \$versionString,
   "name|n=s" => \$longName,
   "include|i=s" => \$include,
   "verbose|v" => \$verbose,
@@ -57,8 +59,9 @@ sub help {
   print "help2adoc $VERSION\n\n";
   print "Usage: help2adoc [OPTIONS]...\n\n";
   print "  -e, --executable\twhat executable to extract from\n";
-  print "  --help-switch\t\twhat option to get help (default=--help)\n";
-  print "  --version-switch\twhat option to get version (default=--version)\n";
+  print "  --help-switch\t\twhat option to get help (default=$helpSwitch)\n";
+  print "  --version-switch\twhat option to get version (default=$versionSwitch)\n";
+  print "  --version-string\ta string to use as version\n";
   print "  -n, --name\t\tthe descriptive name to use\n";
   print "  -v, --verbose\t\tprint more information\n";
   print "  -h, --help\t\tPrint help and exit\n";
@@ -125,17 +128,21 @@ close $helpStream;
 die "Failed to extract name" unless $name;
 $longName = $name unless $longName;
 
-open(my $versionStream, "-|", "$executable $versionSwitch") or die;
-while(<$versionStream>) {
-  s/^\s+|\s+$//g;
-  if(m/^$name.*\s([a-zA-Z0-9-_\.]+)$/) {
-    $version = $1;
-  } elsif(m/^([a-zA-Z0-9-_\.]+)/) {
-    $version = $1;
+if($versionString) {
+  $version = $versionString;
+} else {
+  open(my $versionStream, "-|", "$executable $versionSwitch") or die;
+  while(<$versionStream>) {
+    s/^\s+|\s+$//g;
+    if(m/^$name.*\s([a-zA-Z0-9-_\.]+)$/) {
+      $version = $1;
+    } elsif(m/^([a-zA-Z0-9-_\.]+)/) {
+      $version = $1;
+    }
+    last if $version;
   }
-  last if $version;
+  close $versionStream;
 }
-close $versionStream;
 
 print "= " . uc($name) . "(1)\n";
 print ":doctype:\tmanpage\n";
