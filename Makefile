@@ -4,9 +4,10 @@ all:
 	a2x --format manpage help2adoc.1.txt
 
 install:
-	cp ./help2adoc.pl /usr/bin/help2adoc
-	chmod +x /usr/bin/help2adoc
-	cp help2adoc.1 /usr/share/man/man1/
+	mkdir -p $(DESTDIR)/usr/bin
+	install -o root -g root -m 755 ./help2adoc.pl $(DESTDIR)/usr/bin/help2adoc
+	mkdir -p $(DESTDIR)/usr/share/man/man1
+	install -o root -g root -m 644 help2adoc.1 $(DESTDIR)/usr/share/man/man1/
 
 uninstall:
 	rm -f /usr/bin/help2adoc
