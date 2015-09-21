@@ -10,5 +10,5 @@ install:
 	install -o root -g root -m 644 help2adoc.1 $(DESTDIR)/usr/share/man/man1/
 
 uninstall:
-	rm -f /usr/bin/help2adoc
-
+	rm -f $(DESTDIR)/usr/bin/help2adoc
+	rm -f $(DESTDIR)/usr/share/man/man1/help2adoc.1
