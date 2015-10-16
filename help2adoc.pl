@@ -41,6 +41,7 @@ my $versionString;
 my $verbose = 0;
 my $longName;
 my $include;
+my $stderr;
 
 GetOptions("executable|e=s" => \$executable,
   "help-switch=s" => \$helpSwitch,
@@ -48,6 +49,7 @@ GetOptions("executable|e=s" => \$executable,
   "version-string=s" => \$versionString,
   "name|n=s" => \$longName,
   "include|i=s" => \$include,
+  "add-stderr" => \$stderr,
   "verbose|v" => \$verbose,
   "help|h" => \&help,
   "version|V" => \&version,
@@ -63,6 +65,8 @@ sub help {
   print "  --version-switch\twhat option to get version (default=$versionSwitch)\n";
   print "  --version-string\ta string to use as version\n";
   print "  -n, --name\t\tthe descriptive name to use\n";
+  print "  -i, --include\t\tfile to include at the end\n";
+  print "  --add-stderr\t\tadd stderr to the parsing output\n";
   print "  -v, --verbose\t\tprint more information\n";
   print "  -h, --help\t\tPrint help and exit\n";
   print "  -V, --version\t\tPrint version and exit\n";
@@ -82,8 +86,14 @@ my $bugs;
 my $home;
 my @other;
 
+if($stderr) {
+  $stderr = "2>&1";
+} else {
+  $stderr = "";
+}
+
 warn "Going to run '$executable' with '$helpSwitch' and '$versionSwitch'.\n" if $verbose;
-open(my $helpStream, "-|", "$executable $helpSwitch") or die;
+open(my $helpStream, "-|", "$executable $helpSwitch $stderr") or die;
 
 my $gotHelp = 0;
 while(<$helpStream>) {
@@ -131,7 +141,7 @@ $longName = $name unless $longName;
 if($versionString) {
   $version = $versionString;
 } else {
-  open(my $versionStream, "-|", "$executable $versionSwitch") or die;
+  open(my $versionStream, "-|", "$executable $versionSwitch $stderr") or die;
   while(<$versionStream>) {
     s/^\s+|\s+$//g;
     if(m/^$name.*\s([a-zA-Z0-9-_\.]+)$/) {
