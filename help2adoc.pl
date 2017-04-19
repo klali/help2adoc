@@ -186,6 +186,10 @@ foreach my $option (@help) {
 if($include) {
   open(my $includeStream, "<", $include) or die;
   while(<$includeStream>) {
+    s/^\#/\/\//;
+    s/\\-/-/g;
+    s/^\[(.+)\]$/== $1/;
+    s/\\\\/\\/;
     print $_;
   }
   close $includeStream;
