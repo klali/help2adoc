@@ -85,6 +85,7 @@ my $version;
 my $bugs;
 my $home;
 my @other;
+my @subs;
 
 if($stderr) {
   $stderr = "2>&1";
@@ -96,6 +97,8 @@ warn "Going to run '$executable' with '$helpSwitch' and '$versionSwitch'.\n" if 
 open(my $helpStream, "-|", "$executable $helpSwitch $stderr") or die;
 
 my $gotHelp = 0;
+my $gotUsage = 0;
+my $gotSubs = 0;
 while(<$helpStream>) {
   s/\s+$//;
   s/^(\s+)//;
@@ -106,6 +109,18 @@ while(<$helpStream>) {
     $name = $1 if $1;
     $synopsis = $2 if $2;
     next;
+  }
+  if(m/^[uU][sS][aA][gG][eE]:$/) {
+    warn "multiline usage detected";
+    $gotUsage++;
+  } elsif($gotUsage) {
+    warn "had usage, now matching on '$_'";
+    if(m/(?:\.\/)?([a-zA-Z0-9-_]+) (.*)?/) {
+      $name = $1 if $1;
+      $synopsis = $2 if $2;
+      $gotUsage = 0;
+      next;
+    }
   }
   next unless $name;
   $gotHelp = 0 if $len == 0 && $_ ne "";
@@ -118,6 +133,10 @@ while(<$helpStream>) {
   } elsif(m/[Hh]ome\s?page/) {
     $gotHelp = 0;
     $home = $_;
+  } elsif(m/subcommands:/i or m/available Commands:/i) {
+    $gotSubs++;
+    $gotHelp = 0;
+    warn "getting subcommands";
   } elsif($gotHelp) {
     if($_ eq "") {
       $_ = "+";
@@ -125,12 +144,12 @@ while(<$helpStream>) {
     my $part = pop(@help);
     $part .= "\n$_";
     push @help, $part;
-  } else {
-    if($_ eq "") {
-      next if $#other <= 0;
-      $_ = " +\n";
+  } elsif($gotSubs) {
+    if($_) {
+      push @subs, $_;
+    } else {
+      $gotSubs = 0;
     }
-    push @other, $_;
   }
 }
 close $helpStream;
@@ -181,6 +200,14 @@ foreach my $option (@help) {
 
   print "*" . join(" ", @first) . "*::\n";
   print "$second\n\n";
+}
+
+if($#subs > 0) {
+  print "== SUBCOMMANDS\n";
+  foreach (@subs) {
+    m/^(\w+)(.*)?$/;
+    print "*$1* $2 +\n";
+  }
 }
 
 if($include) {
